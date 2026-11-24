@@ -115,9 +115,15 @@ function sendSignup(e) {
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify(payload)
   }).then(function(r){ return r.json(); }).then(function(data){
-    document.getElementById('formCard').style.display = 'none';
-    document.getElementById('doneCard').style.display = 'block';
-    window.scrollTo(0, 0);
+    if (String(data.success) === 'true') {
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('doneCard').style.display = 'block';
+      window.scrollTo(0, 0);
+    } else {
+      document.getElementById('errCard').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign Me Up';
+    }
   }).catch(function(err){
     document.getElementById('errCard').style.display = 'block';
     btn.disabled = false;
