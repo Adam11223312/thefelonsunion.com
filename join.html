@@ -15,8 +15,11 @@
   input, select, textarea { width: 100%; font-size: 17px; padding: 12px; border: 1px solid #bbb; border-radius: 8px; box-sizing: border-box; }
   textarea { min-height: 84px; }
   .send { display: block; width: 100%; margin-top: 20px; background: #1c1c1c; color: #ffd94d; font-size: 19px; font-weight: bold; padding: 15px; border: 0; border-radius: 10px; cursor: pointer; }
+  .send:disabled { opacity: 0.6; }
   .callbtn { display: block; text-align: center; background: #ffd94d; color: #1c1c1c; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; text-decoration: none; margin-top: 10px; }
   .small { font-size: 14px; color: #555; }
+  .ok { background: #eef7ee; border-color: #9db89d; }
+  .err { background: #fbeeec; border-color: #c9a09a; }
   a { color: #7a5c00; }
 </style>
 </head>
@@ -25,9 +28,9 @@
   <p class="tag">F.E.L.O.N.S. UNION — FELONS &amp; FAMILIES</p>
   <h1>Join the Union — or Volunteer</h1>
   <p class="sub">Resources today. Brighter tomorrow. More than a past — a future with opportunity.</p>
-  <p>Fill this out and a union officer will reach out to you. Signing up starts the conversation — <strong>no payment is taken on this page.</strong> Full membership is $120 a year, associate membership $60 a year, and nobody is turned away from resources for lack of money.</p>
+  <p>Fill this out and you are <strong>on the record</strong>: your sign-up goes straight into the union's book, and a union officer will reach out to you with your sign-up number. <strong>No payment is taken on this page.</strong> Full membership is $120 a year, associate membership $60 a year, and nobody is turned away from resources for lack of money.</p>
 
-  <div class="card">
+  <div class="card" id="formCard">
     <form id="signup" onsubmit="return sendSignup(event)">
       <label for="name">Your full name *</label>
       <input id="name" required autocomplete="name" placeholder="First and last name">
@@ -59,9 +62,22 @@
       <label for="note">Anything we should know?</label>
       <textarea id="note" placeholder="When you're coming home, what you need, how you'd like to help…"></textarea>
 
-      <button class="send" type="submit">Send My Sign-Up</button>
-      <p class="small">Pressing send opens your email app with everything filled in — just press send there too. Your information goes to the union's officers and is never sold.</p>
+      <input type="text" id="honey" style="display:none" tabindex="-1" autocomplete="off">
+
+      <button class="send" id="sendBtn" type="submit">Sign Me Up</button>
+      <p class="small">Your information goes to the union's officers and into the union's sign-up book. It is never sold.</p>
     </form>
+  </div>
+
+  <div class="card ok" id="doneCard" style="display:none">
+    <h2 style="margin-top:0">You're on the record. ✅</h2>
+    <p>Your sign-up was received by the F.E.L.O.N.S. Union and entered in the union's book. A union officer will reach out to you soon — at the number you gave — with your sign-up number.</p>
+    <p class="small">Need us sooner? Call or text (614) 569-6740.</p>
+  </div>
+
+  <div class="card err" id="errCard" style="display:none">
+    <h2 style="margin-top:0">That didn't go through</h2>
+    <p>Please call or text the union at <strong>(614) 569-6740</strong> and we'll sign you up by phone — or try again in a moment.</p>
   </div>
 
   <div class="card">
@@ -75,23 +91,38 @@
 <script>
 function sendSignup(e) {
   e.preventDefault();
+  if (document.getElementById('honey').value) { return false; }
   var v = function(id){ return document.getElementById(id).value.trim(); };
+  var btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
   var interest = v('interest');
-  var subject = 'Union Sign-Up — ' + interest + ' — ' + v('name');
-  var lines = [
-    'Name: ' + v('name'),
-    'Phone: ' + v('phone'),
-    'Email: ' + (v('email') || '(none given)'),
-    'City: ' + (v('city') || '(not given)'),
-    'I want to: ' + interest,
-    'Best way to reach me: ' + v('reach'),
-    'Note: ' + (v('note') || '(none)')
-  ];
-  var url = 'mailto:rickycooper061@gmail.com'
-    + '?cc=mobilemechanic00123@gmail.com'
-    + '&subject=' + encodeURIComponent(subject)
-    + '&body=' + encodeURIComponent(lines.join('\n'));
-  window.location.href = url;
+  var payload = {
+    _subject: 'Union Sign-Up — ' + interest + ' — ' + v('name'),
+    _cc: 'mobilemechanic00123@gmail.com',
+    _template: 'table',
+    _captcha: 'false',
+    Name: v('name'),
+    Phone: v('phone'),
+    Email: v('email') || '(none given)',
+    City: v('city') || '(not given)',
+    Interest: interest,
+    BestWayToReach: v('reach'),
+    Note: v('note') || '(none)'
+  };
+  fetch('https://formsubmit.co/ajax/rickycooper061@gmail.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.json(); }).then(function(data){
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('doneCard').style.display = 'block';
+    window.scrollTo(0, 0);
+  }).catch(function(err){
+    document.getElementById('errCard').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Sign Me Up';
+  });
   return false;
 }
 </script>
