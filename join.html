@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join or Volunteer — F.E.L.O.N.S. Union</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f6f3ec; color: #1c1c1c; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 18px 48px; }
+  h1 { font-size: 30px; margin: 8px 0 2px; }
+  .sub { font-size: 17px; color: #444; margin: 0 0 6px; }
+  .tag { font-weight: bold; letter-spacing: 1px; color: #8a6d1a; margin: 0 0 18px; }
+  .card { background: #fff; border: 1px solid #ddd3b8; border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  label { display: block; font-weight: bold; margin: 14px 0 6px; }
+  input, select, textarea { width: 100%; font-size: 17px; padding: 12px; border: 1px solid #bbb; border-radius: 8px; box-sizing: border-box; }
+  textarea { min-height: 84px; }
+  .send { display: block; width: 100%; margin-top: 20px; background: #1c1c1c; color: #ffd94d; font-size: 19px; font-weight: bold; padding: 15px; border: 0; border-radius: 10px; cursor: pointer; }
+  .callbtn { display: block; text-align: center; background: #ffd94d; color: #1c1c1c; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; text-decoration: none; margin-top: 10px; }
+  .small { font-size: 14px; color: #555; }
+  a { color: #7a5c00; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="tag">F.E.L.O.N.S. UNION — FELONS &amp; FAMILIES</p>
+  <h1>Join the Union — or Volunteer</h1>
+  <p class="sub">Resources today. Brighter tomorrow. More than a past — a future with opportunity.</p>
+  <p>Fill this out and a union officer will reach out to you. Signing up starts the conversation — <strong>no payment is taken on this page.</strong> Full membership is $120 a year, associate membership $60 a year, and nobody is turned away from resources for lack of money.</p>
+
+  <div class="card">
+    <form id="signup" onsubmit="return sendSignup(event)">
+      <label for="name">Your full name *</label>
+      <input id="name" required autocomplete="name" placeholder="First and last name">
+
+      <label for="phone">Your phone number *</label>
+      <input id="phone" required type="tel" autocomplete="tel" placeholder="(614) 555-0123">
+
+      <label for="email">Email (if you have one)</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+
+      <label for="city">City and state</label>
+      <input id="city" placeholder="Columbus, OH">
+
+      <label for="interest">I want to… *</label>
+      <select id="interest" required>
+        <option value="JOIN">Join the union as a member</option>
+        <option value="VOLUNTEER">Volunteer my time</option>
+        <option value="BOTH">Join and volunteer</option>
+        <option value="RESOURCES">I need resources first (ID, housing, job, ride)</option>
+      </select>
+
+      <label for="reach">Best way to reach you</label>
+      <select id="reach">
+        <option>Text me</option>
+        <option>Call me</option>
+        <option>Email me</option>
+      </select>
+
+      <label for="note">Anything we should know?</label>
+      <textarea id="note" placeholder="When you're coming home, what you need, how you'd like to help…"></textarea>
+
+      <button class="send" type="submit">Send My Sign-Up</button>
+      <p class="small">Pressing send opens your email app with everything filled in — just press send there too. Your information goes to the union's officers and is never sold.</p>
+    </form>
+  </div>
+
+  <div class="card">
+    <p style="margin-top:0"><strong>Rather talk to a person?</strong> Call or text the union:</p>
+    <a class="callbtn" href="tel:+16145696740">Call (614) 569-6740</a>
+    <a class="callbtn" href="sms:+16145696740">Text (614) 569-6740</a>
+    <p class="small">Columbus, Ohio · <a href="index.html">Back to resources</a></p>
+  </div>
+</div>
+
+<script>
+function sendSignup(e) {
+  e.preventDefault();
+  var v = function(id){ return document.getElementById(id).value.trim(); };
+  var interest = v('interest');
+  var subject = 'Union Sign-Up — ' + interest + ' — ' + v('name');
+  var lines = [
+    'Name: ' + v('name'),
+    'Phone: ' + v('phone'),
+    'Email: ' + (v('email') || '(none given)'),
+    'City: ' + (v('city') || '(not given)'),
+    'I want to: ' + interest,
+    'Best way to reach me: ' + v('reach'),
+    'Note: ' + (v('note') || '(none)')
+  ];
+  var url = 'mailto:rickycooper061@gmail.com'
+    + '?cc=mobilemechanic00123@gmail.com'
+    + '&subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(lines.join('\n'));
+  window.location.href = url;
+  return false;
+}
+</script>
+</body>
+</html>
